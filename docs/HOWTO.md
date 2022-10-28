@@ -1,0 +1,2 @@
+# Boggle solver HOWTO
+
