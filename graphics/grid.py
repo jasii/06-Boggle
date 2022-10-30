@@ -23,7 +23,7 @@ all flavors of Windows at least back to XP).
 import logging
 logging.basicConfig()
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.WARN)
 
 from graphics.graphics import *    # Zelle's simple OO graphics
 

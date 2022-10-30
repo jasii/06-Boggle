@@ -24,18 +24,21 @@ def display(board: list[list[str]],
 
 def mark_occupied(row: int, col: int):
     """Mark board[row][col] as occupied in display"""
-    VIEW.fill_cell(row, col, color=COLOR_IN_USE)
+    if VIEW:
+        VIEW.fill_cell(row, col, color=COLOR_IN_USE)
 
 def mark_unoccupied(row: int, col: int):
     """Mark board[row][col] as unoccupied (available)"""
-    VIEW.fill_cell(row, col, color=COLOR_UNUSED)
+    if VIEW:
+        VIEW.fill_cell(row, col, color=COLOR_UNUSED)
 
 
 def prompt_to_close():
     """Prompt the user before closing the display"""
     global VIEW
-    input("Press enter to close display")
-    VIEW.win.close()
-    VIEW = None
+    if VIEW:
+        input("Press enter to close display")
+        VIEW.win.close()
+        VIEW = None
 
 
