@@ -3,8 +3,8 @@ from typing import Optional
 
 import graphics.grid as grid_view
 
-COLOR_UNUSED = grid_view.white
-COLOR_IN_USE = grid_view.red
+COLOR_UNUSED = grid_view.tile_background
+COLOR_IN_USE = grid_view.tile_accent_background
 
 VIEW: Optional[grid_view.Grid] = None
 
@@ -19,6 +19,7 @@ def display(board: list[list[str]],
     VIEW = grid_view.Grid(len(board), len(board[0]), title="BOGGLER")
     for row_i in range(len(board)):
         for col_i in range(len(board[0])):
+            VIEW.fill_cell(row_i, col_i, COLOR_UNUSED)
             VIEW.label_cell(row_i, col_i, board[row_i][col_i])
 
 def mark_occupied(row: int, col: int):

@@ -45,6 +45,8 @@ white = color_rgb(255,255,255)
 red = color_rgb(200,0,0)
 green = color_rgb(0,200,0)
 blue = color_rgb(0,0,200)
+tile_background = color_rgb(165, 205, 255)
+tile_accent_background = color_rgb(255, 255, 11)
 global nrows
 nrows = 1
 
@@ -60,7 +62,7 @@ class Grid:
         log.debug("Creating grid")
         self.win = GraphWin("Grid", width_px, height_px)
         self.bkgrnd = Rectangle( Point(0,0), Point(width_px,height_px) )
-        self.bkgrnd.setFill( color_rgb(255,255,255) ) # White background
+        self.bkgrnd.setFill( color_rgb(231,231,231) ) # Grey background
         self.cell_width = width_px / cols
         self.cell_height = height_px / rows
         self.bkgrnd.draw(self.win)
