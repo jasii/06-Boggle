@@ -19,7 +19,7 @@ def display(board: list[list[str]],
     VIEW = grid_view.Grid(len(board), len(board[0]), title="BOGGLER")
     for row_i in range(len(board)):
         for col_i in range(len(board[0])):
-            VIEW.label_cell(row_i, col_i, board[row_i][col_i].upper())
+            VIEW.label_cell(row_i, col_i, board[row_i][col_i])
 
 def mark_occupied(row: int, col: int):
     """Mark board[row][col] as occupied in display"""

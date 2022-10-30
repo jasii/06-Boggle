@@ -1,5 +1,6 @@
+BETA
 alpha
-beta
-delta
-gamma
 omega
+dEltA
+gamma
+is
