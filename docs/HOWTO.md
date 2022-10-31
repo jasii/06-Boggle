@@ -744,3 +744,20 @@ def score(solutions: list[str]) -> int:
 ```
 
 Add a call to your `main` function, and you're done. 
+
+## Going beyond
+
+Our Boggle game follows the original design of a single letter on 
+each tile.  How would you approach the following variations? 
+
+- In modern versions of Boggle, "Qu" is a single tile, so that there 
+  is a better chance of building words like "Question".  In scoring, 
+  "Qu" counts as two letters.   There are multiple ways one might 
+  allow this. How can we do it as simply as possible, without 
+  changing too much of our current Boggle solver? 
+
+- In some versions of Boggle, one or two letters may be colored red. 
+  Words that use these red letters are worth extra points.  What is 
+  the simplest way to incorporate this variation into the Boggle 
+  solver? 
+
