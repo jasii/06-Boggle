@@ -438,9 +438,9 @@ total number of characters on the board:
 
 ```python
 # Board dimensions
-ROW_LEN = 4
-COL_LEN = ROW_LEN
-BOARD_SIZE = ROW_LEN * COL_LEN
+N_ROWS = 4
+N_COLS = N_ROWS
+BOARD_SIZE = N_ROWS * N_COLS
 ```
 
 Now we are ready to write a function `get_board_string` which either 
@@ -488,7 +488,7 @@ strings.
 ```python
 def unpack_board(letters: str) -> list[list[str]]:
     """Unpack a single string of characters into
-    a matrix of individual characters, ROW_LEN x COL_LEN.
+    a matrix of individual characters, N_ROWS x N_COLS.
 
     >>> unpack_board("abcdefghijklmnop")
     [['a', 'b', 'c', 'd'], ['e', 'f', 'g', 'h'], ['i', 'j', 'k', 'l'], ['m', 'n', 'o', 'p']]
@@ -502,7 +502,7 @@ How can we place the right element of `letters` in each
 element of the result?  There are at least two possible approaches. 
 
 - The index in letters for i,j of the result
-  is i * ROW_LEN + j. 
+  is i * N_ROWS + j. 
 - We can keep a separate index for letters, adding one each
   we append a letter to a row. 
 
@@ -510,13 +510,39 @@ I used the first approach initially, then changed to the second
 approach.  The first approach is a little shorter, but I think the 
 second is a little clearer.  Take your pick. 
 
+### A view of the board
+
+Although we can solve Boggle puzzles much faster without graphics, 
+it is fast enough and more enjoyable to watch the board as it is 
+solved. We'll use the provided `board_view` module. 
+
+```python
+import board_view
+```
+
+We will want to create the graphics immediately after creating the 
+board, and destroy it at the end.  For now our `main` program can 
+look like this: 
+
+```python
+def main():
+    words = read_dict(config.DICT_PATH)
+    board_string = get_board_letters()
+    board_string = normalize(board_string)
+    board = unpack_board(board_string)
+    board_view.display(board)
+    board_view.prompt_to_close()
+```
+
 ### Checkpoint 
 
 Now in addition to the functions you wrote in stage 1, you should have 
-- `get_board`, which either returns a string of 16 letters or quits 
-  the program
+- `get_board_letters`, which either returns a string of 16 letters or 
+  quits the program
 - `unpack_board`, which takes a _normalized_ string of 16 characters 
   and returns a list of four lists of four characters. 
+- a skeleton `main`, which displays the board.
+
 
 ## Stage 2 for real: The search
 
@@ -563,8 +589,8 @@ def boggle_solve(board: list[list[str]], words: list[str]) -> list[str]:
         pass  # for now 
     
     # Look for solutions starting from each board position
-    for row_i in range(ROW_LEN):
-        for col_i in range(COL_LEN):
+    for row_i in range(N_ROWS):
+        for col_i in range(N_COLS):
             solve(row_i, col_i, "")
 
     # Return solutions without duplicates, in sorted order
