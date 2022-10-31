@@ -701,7 +701,15 @@ harmless) function call is a small price to pay for replacing eight
 different function calls by one. 
 
 Fill in the recursive call, and you should have a working 
-`boggle_solve` function. 
+`boggle_solve` function.  
+
+Add a call to `boggle_solve` in your `main` 
+function, just after creating the display, to watch it work: 
+
+```python
+    solutions = boggle_solve(board, words)
+    print(solutions)
+```
 
 ### Checkpoint
 
@@ -713,23 +721,7 @@ Now in addition to the functions you wrote in stage 1, you should have
 - `boggle_solve`, which takes a board and a word list and returns a 
   list of the legal Boggle words it found in the board. 
 
-### Putting pieces together
-
-Although we are not _quite_ done with the pieces, we have built 
-enough to see the solution process. Let's fill in enough of our 
-`main` function to see our progress: 
-
-```python
-def main():
-    words = read_dict(config.DICT_PATH)
-    board_string = get_board_letters()
-    board_string = normalize(board_string)
-    board = unpack_board(board_string)
-    board_view.display(board)
-    solutions = boggle_solve(board, words)
-    print(solutions)
-    board_view.prompt_to_close()
-```
+Your main program now shows progress of the search.
 
 ### Score the haul
 
@@ -781,7 +773,13 @@ def score(solutions: list[str]) -> int:
     """
 ```
 
-Add a call to your `main` function, and you're done. 
+Add a call to your `main` function, and print the result: 
+
+```python
+    print(f"{score(solutions)} points")
+```
+
+You should now have a full, working Boggle solver.
 Turn in `boggler.py`.
 
 ## Going beyond
