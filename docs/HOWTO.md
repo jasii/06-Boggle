@@ -58,7 +58,7 @@ search we used to fill cavern chambers with water, but with some
 extra bookkeeping because a single die may be used only once in a 
 single word but multiple times to find different words.
 
-## Stage 1:  An optimized word list
+## Stage 1:  Quickly searching a word list
 
 Our main objective in the first stage of the project is to very 
 quickly determine whether a sequence of letters like _ANT_ is a word 
@@ -198,7 +198,10 @@ call whenever we need _any_ string in normal form helps us be
 consistent in our choice of normal form. 
 
 With `allowed` and `normalize`, you have the pieces you need to 
-complete the `read_dict` function. 
+complete the `read_dict` function.  You may want to refer to prior 
+projects for a reminder of how to open a file, read each line from 
+the file, and strip off the newline.  Sort the word list before 
+returning it. 
 
 ## Checkpoint
 
@@ -286,7 +289,7 @@ A _binary search_ can determine whether the candidate string is in
 our list of 39,391 words in 16 or fewer comparisons.  It does this 
 by very rapidly discarding large parts of the word list, cutting it 
 in half with each operation.  For example, when I add a print statement
-to my `search` function, I can trace the search for "LEONTINE":
+to my `search` function, I can trace the search for "LEONINE":
 
 ```commandline
 boggler_solution.search("LEONINE", words)
@@ -327,12 +330,21 @@ outlined in this pseudocode:
 
 If we set to `mid` to the mid-point between `low` and `high` each 
 time through the loop, each iteration of the loop will either find 
-the word or cut the portion of the list under consideration in half.  
+the word or cut the portion of the list under consideration in half.
 We see that above in the search for "LEONTINE", as the portion of 
 the word list under consideration is cut from 39,391 words to 19,695 
 words, then 9,847 words, then 4,923, 2,461, 1,230, 615, 307, 153, 76,
 38, 19, 9, 4, and finally just 2 words.  It took just 14 comparisons 
 to find "LEONTINE" in the list of 39,391 words.  
+
+How do we know that the maximum number of loop iterations required 
+is 16? Because 
+$$2^{15} = 32,768 < 39,391 < 65,536 = 2^{16}$$
+Each comparison cuts the number of elements we must consider in half,
+and cutting a number between $2^{15}$ and $2^{16}$ in half 16 times 
+will reduce it to 1.  The number of operations required for binary 
+search is proportional to the logarithm base 2 of the length of the 
+list to be searched. 
 
 There is just one adjustment we must make to this standard algorithm.
 When it finishes without finding an exact match, we must distinguish 
