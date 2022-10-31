@@ -69,7 +69,7 @@ up _many_ strings in the same word list.  Instead of checking words
 as we read the word list, we will read it once and store it in 
 memory to use many times.
 
-## Getting a start
+### Getting a start
 
 We will start in the usual way, creating a program file called 
 `boggler.py`.  
@@ -203,13 +203,13 @@ projects for a reminder of how to open a file, read each line from
 the file, and strip off the newline.  Sort the word list before 
 returning it. 
 
-## Checkpoint
+### Checkpoint
 
 At this point you should have three functions, `allowed`, 
 `normalize`, and `read_dict`.  You also have a symbolic constant 
 `MIN_WORD` as a global variable near the beginning of the program. 
 
-## Searching the word list
+### Searching the word list
 
 Our Boggle solver will search the word list repeatedly as it traces 
 paths in the Boggle board.  Consider the sample board above, 
@@ -366,7 +366,7 @@ the length of the list.  Thus we should return the symbolic constant
 _and_ the word at index `low` starts with the candidate we searched 
 for.   
 
-## Checkpoint
+### Checkpoint
 
 At this point you should have the following functions: 
 - `allowed` determines whether a string is a legal Boggle word. The 
@@ -424,7 +424,7 @@ need the `exit` function from the `sys` module, so we'll import that
 near the beginning of the program: 
 
 ```python
-from sys import exit
+import sys
 ```
 
 We need to check that all the characters in the input are letters.  
@@ -488,7 +488,7 @@ strings.
 ```python
 def unpack_board(letters: str) -> list[list[str]]:
     """Unpack a single string of characters into
-    a matrix of individual characters, ROW_LEN x ROW_LEN.
+    a matrix of individual characters, ROW_LEN x COL_LEN.
 
     >>> unpack_board("abcdefghijklmnop")
     [['a', 'b', 'c', 'd'], ['e', 'f', 'g', 'h'], ['i', 'j', 'k', 'l'], ['m', 'n', 'o', 'p']]
@@ -496,10 +496,21 @@ def unpack_board(letters: str) -> list[list[str]]:
 ```
 Note that we are not normalizing the string of letters within 
 `unpack_board`.  We want it to have just one, simple job, unpacking 
-the string into a lists of lists.  I leave the design of this 
-function to you. 
+the string into a lists of lists.  
 
-## Checkpoint 
+How can we place the right element of `letters` in each
+element of the result?  There are at least two possible approaches. 
+
+- The index in letters for i,j of the result
+  is i * ROW_LEN + j. 
+- We can keep a separate index for letters, adding one each
+  we append a letter to a row. 
+
+I used the first approach initially, then changed to the second 
+approach.  The first approach is a little shorter, but I think the 
+second is a little clearer.  Take your pick. 
+
+### Checkpoint 
 
 Now in addition to the functions you wrote in stage 1, you should have 
 - `get_board`, which either returns a string of 16 letters or quits 
@@ -553,8 +564,9 @@ def boggle_solve(board: list[list[str]], words: list[str]) -> list[str]:
     
     # Look for solutions starting from each board position
     for row_i in range(ROW_LEN):
-        for col_i in range(ROW_LEN):
+        for col_i in range(COL_LEN):
             solve(row_i, col_i, "")
+
     # Return solutions without duplicates, in sorted order
     solutions = list(set(solutions))
     return sorted(solutions)
@@ -665,7 +677,7 @@ different function calls by one.
 Fill in the recursive call, and you should have a working 
 `boggle_solve` function. 
 
-## Checkpoint
+### Checkpoint
 
 Now in addition to the functions you wrote in stage 1, you should have 
 - `get_board`, which either returns a string of 16 letters or quits 
@@ -675,7 +687,7 @@ Now in addition to the functions you wrote in stage 1, you should have
 - `boggle_solve`, which takes a board and a word list and returns a 
   list of the legal Boggle words it found in the board. 
 
-## Putting pieces together
+### Putting pieces together
 
 Although we are not _quite_ done with the pieces, we have built 
 enough to see the solution process. Let's fill in enough of our 
@@ -693,7 +705,7 @@ def main():
     board_view.prompt_to_close()
 ```
 
-## Score the haul
+### Score the haul
 
 There is just one piece still missing:  We need to determine how 
 many points our list of words is worth.  The score for a single word 
@@ -744,6 +756,7 @@ def score(solutions: list[str]) -> int:
 ```
 
 Add a call to your `main` function, and you're done. 
+Turn in `boggler.py`.
 
 ## Going beyond
 
