@@ -342,7 +342,8 @@ is 16? Because
 $$2^{15} = 32,768 < 39,391 < 65,536 = 2^{16}$$
 Each comparison cuts the number of elements we must consider in half,
 and cutting a number between $2^{15}$ and $2^{16}$ in half 16 times 
-will reduce it to 1.  The number of operations required for binary 
+will reduce it to less than 1.
+The number of operations required for binary 
 search is proportional to the logarithm base 2 of the length of the 
 list to be searched. 
 
@@ -356,13 +357,13 @@ that we can use for this check.
 
 In sorted order, a prefix of a word comes before the 
 full word (e.g., "LEO" < "LEONINE").  Since we have eliminated all 
-words that would occur _before_ `min`, the current value of `min` is 
+words that would occur _before_ `low`, the current value of `low` is 
 where a longer word starting with the candidate would appear.  
 However, we have to be careful:  If we search for a candidate that 
-would come at the very end of the word list, `min` could be equal to 
+would come at the very end of the word list, `low` could be equal to 
 the length of the list.  Thus we should return the symbolic constant 
-`PREFIX` only if `min` is less than the length of the word list 
-_and_ the word at index `min` starts with the candidate we searched 
+`PREFIX` only if `low` is less than the length of the word list 
+_and_ the word at index `low` starts with the candidate we searched 
 for.   
 
 ## Checkpoint
