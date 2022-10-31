@@ -398,6 +398,349 @@ created near the beginning of your program file.
 
 This concludes stage 1. 
 
+## Stage 1.5: Setting up for the solver
 
+The heart of our Boggle solver will be a recursive search
+of the Boggle board, starting from each cell. Before we can
+write that, we will need a board.  We will obtain the letters for
+the board from the user.  Typing exactly 16 letters is not easy.
+We should give the user another chance if they mistype it the first 
+time.  
 
+```commandline
+Boggle board letters (or 'return' to exit)> oydliexenoktati
+"oydliexenoktati" is not a valid Boggle board
+Please enter exactly 16 letters (or empty to quit)
+Boggle board letters (or 'return' to exit)> 1234567890121234
+"1234123412341234" is not a valid Boggle board
+Please enter exactly 16 letters (or empty to quit)
+Boggle board letters (or 'return' to exit)> 
+OK, sorry it didn't work out
+```
 
+Note that we are giving the user an option to just give up instead 
+of trying again and again to enter a valid board.  For that we will 
+need the `exit` function from the `sys` module, so we'll import that 
+near the beginning of the program: 
+
+```python
+from sys import exit
+```
+
+We need to check that all the characters in the input are letters.  
+We already have a function `allowed` for that.  We also need to be 
+sure the input is the right length.  Once again, we do _not_ want 
+magic numbers sprinkled around our code, so we will create additional
+symbolic constants and use them instead.  Since we anticipate we 
+will also need the dimensions of the board when we are searching it,
+we might as well define the row and column length as well as the 
+total number of characters on the board: 
+
+```python
+# Board dimensions
+ROW_LEN = 4
+COL_LEN = ROW_LEN
+BOARD_SIZE = ROW_LEN * COL_LEN
+```
+
+Now we are ready to write a function `get_board_string` which either 
+returns a valid string of 16 letters or ends the program.  
+
+```python
+def get_board_letters() -> str:
+    """Get a valid string to form a Boggle board
+    from the user.  May produce diagnostic
+    output and quit.
+    """
+```
+
+The body of `get_board_letters` will be a loop that repeats until 
+either an acceptable board string can be returned, or the option to 
+stop the program is chosen.  Since we haven't written this kind of 
+input validation loop before, I'll provide it: 
+
+```python
+    while True:
+        board_string = input("Boggle board letters (or 'return' to exit)> ")
+        if allowed(board_string) and len(board_string) == BOARD_SIZE:
+            return board_string
+        elif len(board_string) == 0:
+            print(f"OK, sorry it didn't work out")
+            sys.exit(0)
+        else:
+            print(f'"{board_string}" is not a valid Boggle board')
+            print(f'Please enter exactly 16 letters (or empty to quit)')
+```
+
+The argument 0 to `sys.exit` means "this is fine." 
+If we wrote `sys.exit(1)`, it would mean "something went wrong".  
+The reasons for the convention that 0 means "ok" and other integers
+indicate problems are lost in the mists of time.  
+You will encounter these "return code" conventions again when you 
+take courses that use Linux or any other version of Unix. 
+
+When `get_board_letters` returns a valid list of 16 letters, we can
+use the `normalize` function we already wrote to make it consistent 
+with the way we are storing the word list.  Then we will need to 
+convert that string into a board, represented as a list of lists of 
+strings. 
+
+```python
+def unpack_board(letters: str) -> list[list[str]]:
+    """Unpack a single string of characters into
+    a matrix of individual characters, ROW_LEN x ROW_LEN.
+
+    >>> unpack_board("abcdefghijklmnop")
+    [['a', 'b', 'c', 'd'], ['e', 'f', 'g', 'h'], ['i', 'j', 'k', 'l'], ['m', 'n', 'o', 'p']]
+    """
+```
+Note that we are not normalizing the string of letters within 
+`unpack_board`.  We want it to have just one, simple job, unpacking 
+the string into a lists of lists.  I leave the design of this 
+function to you. 
+
+## Checkpoint 
+
+Now in addition to the functions you wrote in stage 1, you should have 
+- `get_board`, which either returns a string of 16 letters or quits 
+  the program
+- `unpack_board`, which takes a _normalized_ string of 16 characters 
+  and returns a list of four lists of four characters. 
+
+## Stage 2 for real: The search
+
+Finally we reach the heart of the matter, searching for words in the 
+Boggle board.  
+
+```python
+def boggle_solve(board: list[list[str]], words: list[str]) -> list[str]:
+    """Find all the words that can be made by traversing
+    the boggle board in all 8 directions.  Returns sorted list without
+    duplicates.
+
+    >>> board = unpack_board("PLXXMEXXXAXXSXXX")
+    >>> words = read_dict("data/dict.txt")
+    >>> boggle_solve(board, words)
+    ['AMP', 'AMPLE', 'AXE', 'AXLE', 'ELM', 'EXAM', 'LEA', 'MAX', 'PEA', 'PLEA', 'SAME', 'SAMPLE', 'SAX']
+    """
+```
+
+As we did when flooding the cavern, we will write 
+nested for loops to check each potential starting point.  There are 
+no stone walls in the Boggle board, so we will start a recursive 
+search from each position in the grid. 
+
+However, we are going to do something different this time ... we 
+will put the recursive search function _inside_ the function that 
+tries the search from each position.  
+
+```python
+def boggle_solve(board: list[list[str]], words: list[str]) -> list[str]:
+    """Find all the words that can be made by traversing
+    the boggle board in all 8 directions.  Returns sorted list without
+    duplicates.
+
+    >>> board = unpack_board("PLXXMEXXXAXXSXXX")
+    >>> words = read_dict("data/dict.txt")
+    >>> boggle_solve(board, words)
+    ['AMP', 'AMPLE', 'AXE', 'AXLE', 'ELM', 'EXAM', 'LEA', 'MAX', 'PEA', 'PLEA', 'SAME', 'SAMPLE', 'SAX']
+    """
+    solutions = []
+
+    def solve(row: int, col: int, prefix: str):
+        """One solution step"""
+        pass  # for now 
+    
+    # Look for solutions starting from each board position
+    for row_i in range(ROW_LEN):
+        for col_i in range(ROW_LEN):
+            solve(row_i, col_i, "")
+    # Return solutions without duplicates, in sorted order
+    solutions = list(set(solutions))
+    return sorted(solutions)
+```
+
+The reason we are placing `solve` inside `boggle_solve` is to give 
+`solve` access to the arguments `board`, `words`, and the variable
+`solutions` without passing them as arguments.  We avoid global 
+variables (except symbolic constants), but in this case the our 
+`solve` function would be unwieldy with so many arguments.  It would 
+be difficult when reading the code to know if we had passed all the 
+right arguments in the right order.  Making `board`, `words`, and 
+`solutions` non-local variables within `solve` is a reasonable 
+compromise that shortens our code without making them global. 
+
+Just as when we flooded a cavern with recursive traversal, the first 
+thing our `solve` function should do is determine whether the row 
+and column are within the grid.  If they are not, it should return 
+without doing anything more. 
+
+`solve` must also avoid using the same die twice in one word.  In 
+the cavern, we prevented finding the same air chamber twice by 
+filling it with water.  We will do something similar in the Boggle 
+board:  When we use a letter, we will temporarily mark that position 
+in the grid "in use".  After `solve` determines that a row and 
+column index are within the grid, it will check to see whether that 
+position is already in use.  For this we will use yet another 
+symbolic constant, defined near the beginning of the program: 
+
+```python
+# Special character in position that is
+# already in use
+IN_USE = "@"
+```
+
+If `solve` finds that the character at the position it is 
+investigating is `IN_USE`, it should return without doing anything 
+more. 
+
+If `solve` is investigating a position that is within the board and 
+is not already in use, then it must consider whether the letter at 
+that position can be used to build a word.  The argument `prefix` 
+holds the letters that are in the path that led to the current 
+position.  We add the letter at the current position to that prefix: 
+
+```python
+        letter = board[row][col]
+        prefix = prefix + letter
+```
+We are storing the letter we found at that position because it may 
+become necessary to temporarily replace it with `IN_USE`.  But 
+before we do so, we need to know whether the new prefix is a word or 
+can be extended to form a word.   This is where we use the binary 
+search function: 
+
+```python
+        status = search(prefix, words)
+```
+
+What happens next depends on the result that search returned.  If it 
+returned `NOPE` (not a word, and cannot be extended to form a word), 
+then once again we just return.  
+
+If the status is `MATCH`, then we append the newly found word (in 
+`prefix`) to our list of solutions: 
+
+```python
+            solutions.append(prefix)
+```
+
+We will also consider that any word _might_ be extended to form 
+additional words.  If the status is `MATCH` or it is `PREFIX`, we 
+will try continuing in all 8 directions.  But before we do, we must 
+mark the current position `IN_USE`.  At the same time, we will show 
+that the position is occupied in the graphical display.  But both of 
+these are temporary:  We will mark it occupied, then make the 
+recursive calls, then restore it to its original state so that the 
+same position may be used in _other_ words. 
+
+```python
+        if status == MATCH or status == PREFIX:
+            # Keep searching
+            board[row][col] = IN_USE  # Prevent reusing
+            board_view.mark_occupied(row, col)
+            # *** Recursive calls go here ***
+            # Restore letter for further search
+            board[row][col] = letter
+            board_view.mark_unoccupied(row, col)
+```
+
+Finally we need to fill in the 8 recursive calls for trying further 
+moves in all directions, including diagonals.  For the cavern, we 
+wrote each of the separate function calls.   Trying all 8 directions 
+can be simpler with a loop: 
+
+```python
+            for d_row in [0, -1, 1]:
+                for d_col in [0, -1, 1]:
+                    ## Make recursive col with row+d_row, col+d_col
+```
+You may notice that this is actually 9 recursive calls, not 8 ... 
+because it includes a recursive call to position `row+0, col+0`.  
+Oopsy.  But we have marked the current position as `IN_USE`, so it 
+doesn't cause a problem.  Making one extra, useless (but also 
+harmless) function call is a small price to pay for replacing eight 
+different function calls by one. 
+
+Fill in the recursive call, and you should have a working 
+`boggle_solve` function. 
+
+## Checkpoint
+
+Now in addition to the functions you wrote in stage 1, you should have 
+- `get_board`, which either returns a string of 16 letters or quits 
+  the program
+- `unpack_board`, which takes a _normalized_ string of 16 characters 
+  and returns a list of four lists of four characters. 
+- `boggle_solve`, which takes a board and a word list and returns a 
+  list of the legal Boggle words it found in the board. 
+
+## Putting pieces together
+
+Although we are not _quite_ done with the pieces, we have built 
+enough to see the solution process. Let's fill in enough of our 
+`main` function to see our progress: 
+
+```python
+def main():
+    words = read_dict(config.DICT_PATH)
+    board_string = get_board_letters()
+    board_string = normalize(board_string)
+    board = unpack_board(board_string)
+    board_view.display(board)
+    solutions = boggle_solve(board, words)
+    print(solutions)
+    board_view.prompt_to_close()
+```
+
+## Score the haul
+
+There is just one piece still missing:  We need to determine how 
+many points our list of words is worth.  The score for a single word 
+is given by this table: 
+
+| Word length |  Points |
+|-------------|---------|
+| 3, 4        | 1       |
+| 5           | 2       |
+|  6          | 3       |
+ | 7          |  5      |
+| 8+          |  11     |
+
+The simplest way to write a function that scores a single 
+word is by looking up word lengths in a data structure representing 
+the table.  Since the longest word we could form is the size of the 
+board, we just need 16 entries, which we can place in a list: 
+
+```python
+# Max word length is 16, so we can just list all
+# the point values.
+#
+#         0  1  2  3  4  5  6  7  8
+POINTS = [0, 0, 0, 1, 1, 2, 3, 5, 11,
+          11, 11, 11, 11, 11, 11, 11, 11 ]
+#          9  10  11  12  13  14  15  16
+```
+Function `word_score` is then trivial: 
+
+```python
+def word_score(word: str) -> int:
+    """Standard point value in Boggle"""
+    assert len(word) <= 16
+    return POINTS[len(word)]
+```
+
+To score the whole list, we can just add up the scores of the 
+individual words.  You already know how to do that.  Make a function
+`score` with this header: 
+
+```python
+def score(solutions: list[str]) -> int:
+    """Sum of scores for each solution
+
+    >>> score(["ALPHA", "BETA", "ABSENTMINDED"])
+    14
+    """
+```
+
+Add a call to your `main` function, and you're done. 
