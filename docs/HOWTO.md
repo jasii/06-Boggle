@@ -168,7 +168,7 @@ MIN_WORD = 3   # A word must be at least 3 characters to count
 ```
 
 To check that a word contains only letters, we can use the string 
-method `isalpha`, e.g., `s.isapha()`.  
+method `isalpha`, e.g., `s.isalpha()`.  
 
 If `read_dict` includes only alphabetic strings of at least 3 
 characters, it will exclude "is" and "big-time" from `shortdict.txt`. 
