@@ -714,7 +714,7 @@ function, just after creating the display, to watch it work:
 ### Checkpoint
 
 Now in addition to the functions you wrote in stage 1, you should have 
-- `get_board`, which either returns a string of 16 letters or quits 
+- `get_board_letters`, which either returns a string of 16 letters or quits 
   the program
 - `unpack_board`, which takes a _normalized_ string of 16 characters 
   and returns a list of four lists of four characters. 
